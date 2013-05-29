@@ -6,6 +6,8 @@ using MonoTouch.UIKit;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage;
 using System.IO;
+using Microsoft.WindowsAzure.Storage.Blob;
+using System.Threading.Tasks;
 
 namespace AzureBlobUploader
 {
@@ -22,36 +24,57 @@ namespace AzureBlobUploader
 			// Custom initialization
 		}
 
+		Task UploadTask {
+			get;
+			set;
+		}
+
 		void AddNewItem (object sender, EventArgs args)
 		{
 			var picker = new UIImagePickerController ();
+			picker.ShowsCameraControls = true;
 
 			this.NavigationController.PresentViewController (picker, true, new NSAction(()=>{
 				Console.WriteLine("done."); 
 			}));
 
 			picker.FinishedPickingMedia += (object s, UIImagePickerMediaPickedEventArgs e) => {
+				Title = NSBundle.MainBundle.LocalizedString ("Uploading photo...", "Uploading photo...");
+
 				picker.DismissViewController (true, null);
 
 				var randomInt = Convert.ToUInt64(new Random().NextDouble() * UInt64.MaxValue);
 				var name = randomInt + ".png";
-				UploadImage(e.OriginalImage, name);
+
+				UploadTask = new TaskFactory<CloudBlockBlob>().StartNew(()=>{
+					return UploadImage(e.OriginalImage, name);
+				})
+				.ContinueWith((blob)=>{
+					InvokeOnMainThread(()=>{
+							dataSource.Objects.Insert (0, new Tuple<String, UIImage>(name, e.OriginalImage));
+						Title = NSBundle.MainBundle.LocalizedString ("Photos", "Photos");
+						using (var indexPath = NSIndexPath.FromRowSection (0, 0))
+							TableView.InsertRows (new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Automatic);
+
+					});
+				});
 			};
 
 			picker.Canceled += (s, e) => {
 				picker.DismissViewController (true, null);
 			};
-
-			//dataSource.Objects.Insert (0, DateTime.Now);
-
-			//using (var indexPath = NSIndexPath.FromRowSection (0, 0))
-			//	TableView.InsertRows (new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Automatic);
 		}
 
-		private void UploadImage(UIImage image, String name) 
+		static CloudBlobClient GetClient ()
 		{
 			var creds = new StorageCredentials ("YOUR_AZURE_STORAGE_ACCOUNT_NAME", "YOUR_AZURE_STORAGE_ACCOUNT_KEY");
 			var client = new CloudStorageAccount (creds, true).CreateCloudBlobClient ();
+			return client;
+		}
+
+		private CloudBlockBlob UploadImage(UIImage image, String name) 
+		{
+			var client = GetClient ();
 			var container = client.GetContainerReference("images");
 			container.CreateIfNotExists();
 			var blob = container.GetBlockBlobReference(name);
@@ -60,7 +83,7 @@ namespace AzureBlobUploader
 
 			blob.UploadFromStream (stream);
 
-			Console.WriteLine (image.DebugDescription);
+			return blob;
 		}
 
 		public override void DidReceiveMemoryWarning ()
@@ -78,7 +101,7 @@ namespace AzureBlobUploader
 			// Perform any additional setup after loading the view, typically from a nib.
 			NavigationItem.LeftBarButtonItem = EditButtonItem;
 
-			var addButton = new UIBarButtonItem (UIBarButtonSystemItem.Add, AddNewItem);
+			var addButton = new UIBarButtonItem (UIBarButtonSystemItem.Camera, AddNewItem);
 			NavigationItem.RightBarButtonItem = addButton;
 
 			TableView.Source = dataSource = new DataSource (this);
@@ -87,7 +110,7 @@ namespace AzureBlobUploader
 		class DataSource : UITableViewSource
 		{
 			static readonly NSString CellIdentifier = new NSString ("DataSourceCell");
-			List<object> objects = new List<object> ();
+			List<Tuple<String, UIImage>> objects = new List<Tuple<String, UIImage>> ();
 			RootViewController controller;
 
 			public DataSource (RootViewController controller)
@@ -95,7 +118,7 @@ namespace AzureBlobUploader
 				this.controller = controller;
 			}
 
-			public IList<object> Objects {
+			public IList<Tuple<String, UIImage>> Objects {
 				get { return objects; }
 			}
 			// Customize the number of sections in the table view.
@@ -113,7 +136,7 @@ namespace AzureBlobUploader
 			{
 				var cell = (UITableViewCell)tableView.DequeueReusableCell (CellIdentifier, indexPath);
 
-				cell.TextLabel.Text = objects [indexPath.Row].ToString ();
+				cell.TextLabel.Text = objects [indexPath.Row].Item1;
 
 				return cell;
 			}

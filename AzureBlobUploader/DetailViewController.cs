@@ -8,13 +8,13 @@ namespace AzureBlobUploader
 {
 	public partial class DetailViewController : UIViewController
 	{
-		object detailItem;
+		Tuple<String, UIImage> detailItem;
 
 		public DetailViewController (IntPtr handle) : base (handle)
 		{
 		}
 
-		public void SetDetailItem (object newDetailItem)
+		public void SetDetailItem (Tuple<String, UIImage> newDetailItem)
 		{
 			if (detailItem != newDetailItem) {
 				detailItem = newDetailItem;
@@ -28,7 +28,10 @@ namespace AzureBlobUploader
 		{
 			// Update the user interface for the detail item
 			if (IsViewLoaded && detailItem != null)
-				detailDescriptionLabel.Text = detailItem.ToString ();
+			{
+				Title = detailItem.Item1;
+				imageView.Image = detailItem.Item2;
+			}
 		}
 
 		public override void DidReceiveMemoryWarning ()
