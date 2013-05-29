@@ -32,7 +32,6 @@ namespace AzureBlobUploader
 		void AddNewItem (object sender, EventArgs args)
 		{
 			var picker = new UIImagePickerController ();
-			picker.ShowsCameraControls = true;
 
 			this.NavigationController.PresentViewController (picker, true, new NSAction(()=>{
 				Console.WriteLine("done."); 
