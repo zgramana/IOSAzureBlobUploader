@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureBlobUploader", "AzureBlobUploader\AzureBlobUploader.csproj", "{B2C312A5-8E43-4D8D-8D4F-A3AD2AB48BDA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+		Debug|iPhone = Debug|iPhone
+		Release|iPhone = Release|iPhone
+		Ad-Hoc|iPhone = Ad-Hoc|iPhone
+		AppStore|iPhone = AppStore|iPhone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B2C312A5-8E43-4D8D-8D4F-A3AD2AB48BDA}.Ad-Hoc|iPhone.ActiveCfg = Ad-Hoc|iPhone
+		{B2C312A5-8E43-4D8D-8D4F-A3AD2AB48BDA}.Ad-Hoc|iPhone.Build.0 = Ad-Hoc|iPhone
+		{B2C312A5-8E43-4D8D-8D4F-A3AD2AB48BDA}.AppStore|iPhone.ActiveCfg = AppStore|iPhone
+		{B2C312A5-8E43-4D8D-8D4F-A3AD2AB48BDA}.AppStore|iPhone.Build.0 = AppStore|iPhone
+		{B2C312A5-8E43-4D8D-8D4F-A3AD2AB48BDA}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{B2C312A5-8E43-4D8D-8D4F-A3AD2AB48BDA}.Debug|iPhone.Build.0 = Debug|iPhone
+		{B2C312A5-8E43-4D8D-8D4F-A3AD2AB48BDA}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{B2C312A5-8E43-4D8D-8D4F-A3AD2AB48BDA}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{B2C312A5-8E43-4D8D-8D4F-A3AD2AB48BDA}.Release|iPhone.ActiveCfg = Release|iPhone
+		{B2C312A5-8E43-4D8D-8D4F-A3AD2AB48BDA}.Release|iPhone.Build.0 = Release|iPhone
+		{B2C312A5-8E43-4D8D-8D4F-A3AD2AB48BDA}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{B2C312A5-8E43-4D8D-8D4F-A3AD2AB48BDA}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = AzureBlobUploader\AzureBlobUploader.csproj
+	EndGlobalSection
+EndGlobal
